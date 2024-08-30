@@ -121,7 +121,7 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import * as Yup from "yup";
 import useFetch from "@/hooks/use-fetch";
 import { login }  from "@/Auth/apiAuth"
-import { useUrlState } from "@/context";
+import { UrlState } from "@/context";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card";
 import { Input} from "./ui/input";
 import { Button} from "./ui/button";
@@ -152,21 +152,22 @@ const Login: React.FC = () => {
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
 
-    setFormData((prevState) => ({
-      ...prevState,
+    setFormData({
+      ...formData,
       [name]: value,
-    }));
+    })
+    setErrors({});
   };
 
   const { data, error, loading, fn: fnLogin } = useFetch(login,formData);
-  const { fetchUser } = useUrlState();
+  const { fetchUser } = UrlState();
 
   useEffect(() => {
     if (error === null && data) {
       navigate(`/dashboard?${longLink ? `createNew=${longLink}` : ""}`);
       fetchUser();
     }
-  }, [data, error, fetchUser, longLink, navigate]);
+  }, [data, error, loading]);
 
 
   const handleLogin = async () => {

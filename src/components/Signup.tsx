@@ -3,7 +3,7 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import * as Yup from "yup";
 import useFetch from "@/hooks/use-fetch";
 import { signup }  from "@/Auth/apiAuth";
-import { useUrlState } from "@/context";
+import { UrlState } from "@/context";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card";
 import { Input} from "./ui/input";
 import { Button} from "./ui/button";
@@ -16,6 +16,7 @@ interface FormData {
   password: string;
   type: string;
   placeholder: string;
+  profile_pic: null,
 
 }
 
@@ -23,6 +24,7 @@ interface FormErrors {
   name?: string;
   email?: string;
   password?: string;
+  profile_pic?: null,
 }
 
 const Signup: React.FC = () => {
@@ -31,6 +33,7 @@ const Signup: React.FC = () => {
     name: "",
     email: "",
     password: "",
+    profile_pic: null,
     type: "",
     placeholder: "",
   });
@@ -40,23 +43,25 @@ const Signup: React.FC = () => {
   const longLink = searchParams.get("createNew");
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
+    const { name, value, files } = e.target;
 
-    setFormData((prevState) => ({
-      ...prevState,
-      [name]: value,
-    }));
+    setFormData({
+      ...formData,
+      [name]: files? files[0] : value,
+    });
+
+    setErrors({});
   };
 
   const { data, error, loading, fn: fnSignup } = useFetch(signup,formData);
-  const { fetchUser } = useUrlState();
+  const { fetchUser } = UrlState();
 
   useEffect(() => {
     if (error === null && data) {
       navigate(`/dashboard?${longLink ? `createNew=${longLink}` : ""}`);
       fetchUser();
     }
-  }, [data, error, fetchUser, longLink, navigate]);
+  }, [data, error, loading]);
 
 
   const handleSignup = async () => {
@@ -128,15 +133,15 @@ const Signup: React.FC = () => {
           {errors.password && <Error message={errors.password} />}
         </div>
 
-        {/* <div className="space-y-1">
+        <div className="space-y-1">
           <Input
             name="profile_pic"
             type="file"
-            accept="image/"
+            accept="image/*"
             onChange={handleInputChange}
           />
           {errors.profile_pic && <Error message={errors.profile_pic} />}
-        </div> */}
+        </div>
       </CardContent>
 
       <CardFooter>

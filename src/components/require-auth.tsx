@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { BarLoader } from "react-spinners"; 
-import { useUrlState } from "@/context"; 
+import { UrlState } from "@/context"; 
 
 interface RequireAuthProps {
   children: React.ReactNode;
@@ -9,7 +9,7 @@ interface RequireAuthProps {
 
 const RequireAuth: React.FC<RequireAuthProps> = ({ children }) => {
   const navigate = useNavigate();
-  const { loading, isAuthenticated } = useUrlState();
+  const { loading, isAuthenticated } = UrlState();
 
   useEffect(() => {
     if (!isAuthenticated && loading === false) {

@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { LinkIcon, LogOut } from "lucide-react";
-import { useUrlState } from "@/context";
+import { UrlState } from "@/context";
 import useFetch from "@/hooks/use-fetch";
 import { BarLoader } from "react-spinners";
 import { logout } from "@/Auth/apiAuth";
@@ -18,7 +18,7 @@ import { logout } from "@/Auth/apiAuth";
 
 const Header = () => {
   const navigate = useNavigate();
-  const {user, fetchUser} = useUrlState();
+  const {user, fetchUser} = UrlState();
   const {loading, fn: fnLogout} = useFetch(logout)
 
   return (
@@ -40,8 +40,10 @@ const Header = () => {
                 <DropdownMenuLabel>{user?.user_metadata?.name}</DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem>
-                  <LinkIcon className="mr-2 h-4 w-4" />
-                  My Links
+                  <Link to="/dashboard" className="flex">
+                   <LinkIcon className="mr-2 h-4 w-4" />
+                   My Links
+                  </Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem className="text-yellow-300">
                   <LogOut className="mr-2 h-4 w-4" />
